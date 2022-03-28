@@ -1,3 +1,4 @@
+var pageContentEl = document.querySelector("#page-content");
 var taskIdCounter = 0;
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
@@ -37,16 +38,13 @@ var createTaskEl = function (taskDataObj) {
   taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
   listItemEl.appendChild(taskInfoEl); 
 
-  taskIdCounter++; // counter helps data tasks count by 1/ data-task-id="0"
-
-  
-  
   // add entire list item to list
   var taskActionsEl = createTaskActions(taskIdCounter); //another way to quickly verify that the function is working
   listItemEl.appendChild(taskActionsEl);
   console.log(taskActionsEl);
 
   tasksToDoEl.appendChild(listItemEl);
+  taskIdCounter++; // counter helps data tasks count by 1/ data-task-id="0"
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,11 +90,30 @@ var createTaskActions = function (taskId) {
   return actionContainerEl;
 };
 
-var taskButtonHandeler = function(event) {
+var deleteTask = function(taskId) {
+  var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+  console.log(taskSelected);
+  taskSelected.remove();
+  console.log("task " + taskId + " deleted.");
+
+};
+
+var taskButtonHandler = function(event) {    ///for the event listener
   console.log(event.target);
+
+  if (event.target.matches(".delete-btn")) {
+    console.log("you clicked a delete button!");
+
+    // get the element's task id
+    var taskId = event.target.getAttribute("data-task-id");  // targeting the data
+    deleteTask(taskId); // doesnt need a var x = before calling deleteTask. because deleteTask doesnt return anything.
+    console.log(taskId);
+  }
 }
 
-var pageContentEl = document.querySelector("#page-content");
+
 
 
 formEl.addEventListener("submit", taskFormHandler);
+
+pageContentEl.addEventListener("click", taskButtonHandler);

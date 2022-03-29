@@ -90,7 +90,25 @@ var createTaskActions = function (taskId) {
   return actionContainerEl;
 };
 
-var deleteTask = function(taskId) {
+var editTask = function(taskId) {  //function for editing that creates its own taskSelected variables based on the provided (taskId).
+  // get task list item element
+var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+// get content from task name and type
+var taskName = taskSelected.querySelector("h3.task-name").textContent;
+console.log(taskName);
+
+var taskType = taskSelected.querySelector("span.task-type").textContent;
+
+document.querySelector("input[name='task-name']").value = taskName;  //task's name and type should appear in the form inputs
+document.querySelector("select[name='task-type']").value = taskType;
+document.querySelector("#save-task").textContent = "Save Task"; //update the text of the submit button to say "Save Task".
+
+formEl.setAttribute("data-task-id", taskId); //his will add the taskId to a data-task-id attribute on the form itself.
+
+};
+
+var deleteTask = function(taskId) { //function for deletes that creates its own taskSelected variables based on the provided (taskId).
   var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
   console.log(taskSelected);
   taskSelected.remove();
@@ -98,18 +116,21 @@ var deleteTask = function(taskId) {
 
 };
 
-var taskButtonHandler = function(event) {    ///for the event listener
-  console.log(event.target);
+var taskButtonHandler = function(event) {
+  // get target element from event
+  var targetEl = event.target;
 
-  if (event.target.matches(".delete-btn")) {
-    console.log("you clicked a delete button!");
-
-    // get the element's task id
-    var taskId = event.target.getAttribute("data-task-id");  // targeting the data
-    deleteTask(taskId); // doesnt need a var x = before calling deleteTask. because deleteTask doesnt return anything.
-    console.log(taskId);
+  // edit button was clicked
+  if (targetEl.matches(".edit-btn")) {
+    var taskId = targetEl.getAttribute("data-task-id");
+    editTask(taskId);
+  } 
+  // delete button was clicked
+  else if (targetEl.matches(".delete-btn")) {
+    var taskId = targetEl.getAttribute("data-task-id");
+    deleteTask(taskId);
   }
-}
+};
 
 
 

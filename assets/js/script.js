@@ -36,9 +36,7 @@ var createTaskEl = function (taskDataObj) {
   // create list item
   var listItemEl = document.createElement("li");
   listItemEl.className = "task-item";
-  console.log(taskDataObj);
-  console.log(taskDataObj.status);
-
+  
   // add task id as a custom attribute
   listItemEl.setAttribute("data-task-id", taskIdCounter); //method can be used to add or update any attribute on an HTML element
 
@@ -59,13 +57,13 @@ var createTaskEl = function (taskDataObj) {
 
   listItemEl.appendChild(taskActionsEl);
 
-  console.log(taskActionsEl);
-
   tasksToDoEl.appendChild(listItemEl);
 
   taskDataObj.id = taskIdCounter; //creating a property of ID to the current taskDataObj and then on Line 63 we had to push it to the array
 
   tasks.push(taskDataObj);  // ** pushed the tasks into the Array of  (taskDataObj)
+
+  saveTasks();
 
   taskIdCounter++; //  tasks count by 1/ data-task-id="0" and then any tasks after increments by 1 (i++)
 };
@@ -95,6 +93,7 @@ var completeEditTask = function (taskName, taskType, taskId) {
   formEl.removeAttribute("data-task-id"); //reset the form by removing the task id and changing the button text back to normal
   document.querySelector("#save-task").textContent = "Add Task";
 
+  saveTasks();
   
 };
 
@@ -183,7 +182,7 @@ var deleteTask = function (taskId) {
 
   // reassign tasks array to be the same as updatedTaskArr
   tasks = updatedTaskArr;
-
+  saveTasks();
 };
 
 var taskButtonHandler = function (event) {
@@ -203,8 +202,7 @@ var taskButtonHandler = function (event) {
 };
 
 var taskStatusChangeHandler = function (event) {
-  console.log(event.target);
-  console.log(event.target.getAttribute("data-task-id"));
+  
   // get the task item's id
   var taskId = event.target.getAttribute("data-task-id");
 
@@ -230,8 +228,15 @@ var taskStatusChangeHandler = function (event) {
       tasks[i].status = statusValue;
     }
   }
-  console.log(tasks);
+ 
+  saveTasks();
+
 };
+
+
+var saveTasks = function() {  //function made to set the data to local storage using json "tasks = the key" and "JSON = the string of data entered for the value in local storage"
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 formEl.addEventListener("submit", taskFormHandler);
 

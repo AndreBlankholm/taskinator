@@ -238,8 +238,54 @@ var saveTasks = function() {  //function made to set the data to local storage u
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+
+var loadTasks = function() { 
+  //1 Gets task items from localStorage.
+  //2 Converts tasks from the string format back into an array of objects.  
+  //3 Iterates through a tasks array and creates task elements on the page from it.
+  var jsonTasks = localStorage.getItem("tasks");
+  var tasksArr = JSON.parse(jsonTasks);
+
+  if(tasksArr !== null && tasksArr.length > 0) {
+    for(i = 0; i < tasksArr.length; i++) {
+      var task = tasksArr[i];
+      createTaskEl(task);
+      // find the parent task item element based on the id
+      var taskSelected = document.querySelector(
+        ".task-item[data-task-id='" + task.id + "']"
+      );
+
+      if (task.status === "to do") {
+        tasksToDoEl.appendChild(taskSelected);
+      } else if (task.status === "in progress") {
+        tasksInProgressEl.appendChild(taskSelected);
+      } else if (task.status === "completed") {
+        tasksCompletedEl.appendChild(taskSelected);
+      }
+
+      var select = taskSelected.querySelector("select[name='status-change']");
+
+      if(task.status === "to do") {
+
+        select.selectedIndex = 0;
+      }
+      else if (task.status === "in progress") {
+        select.selectedIndex = 1;
+      }
+      else{
+        select.selectedIndex = 2;
+      }
+    };
+  }
+  
+  
+
+}
+ 
 formEl.addEventListener("submit", taskFormHandler);
 
 pageContentEl.addEventListener("click", taskButtonHandler);
 
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
